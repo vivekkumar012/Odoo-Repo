@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import toast, { Toaster } from 'react-hot-toast';
 import clsx from "clsx"
 import { Link } from "react-router-dom"
 import { Menu, Search, User, LogIn, X, ShoppingCart } from "react-feather"
@@ -7,14 +8,40 @@ import { UserContext, CartContext } from '../App.jsx'
 import Button from "../components/Button.jsx"
 import Input from "../components/Input"
 import UserDropDown from '../components/UserDropDown'
-// import api from "./api"
+import api from "../api.js"
 import useClickOutside from '../hooks/useClickOutside.js'
+import axios from 'axios'
 
 export default function Navbar() {
 	const {user, setUser} = useContext(UserContext)
 	const {cart, cartDispatch} = useContext(CartContext)
 	const [showMenu, setShowMenu] = useState(false)
 	const navbarRef = useClickOutside(() => setShowMenu(false))
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	useEffect(() => {
+      const user = localStorage.getItem("userToken");
+		if(user) {
+		 setIsLoggedIn(true)
+		} else {
+		 setIsLoggedIn(false);
+		}
+    }, [])
+
+	const handleLogout = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/v1/user/logout", {
+        withCredentials: true
+      })
+      toast.success(response.data.message); 
+      localStorage.removeItem("userToken");
+      setIsLoggedIn(false);
+
+    } catch (error) {
+      console.log("Error in Logout", error)
+      toast.error("Logout feature is available soon!!")
+    }
+  }
 
 	return (
 		<nav className={clsx(
@@ -29,8 +56,13 @@ export default function Navbar() {
 					<h3 className="text-medium text-2xl">HOME</h3>
 				</Link>
 			</div>
+			<div className="flex justify-between items-center md:mx-0">
+				
+					<Link to={"/listings"} className="px-3 py-2 text-black border rounded-xl hover:bg-gray-500 hover:text-white'">ALL LISTING </Link>
+			
+			</div>
 
-			<div className="flex items-center ml-2 space-x-4 md:order-2">
+			{/* <div className="flex items-center ml-2 space-x-4 md:order-2">
 				<Link to="/cart" className="relative flex items-center pr-2">
 					<ShoppingCart width={24} height={24} />
 					{cart.products.length ?
@@ -56,7 +88,23 @@ export default function Navbar() {
 						:	<Menu width={24} height={24} onClick={() => setShowMenu(true)} />
 					}
 				</button>
+			</div> */}
+
+			{isLoggedIn ? (
+				<button onClick={handleLogout} className='bg-transparent text-white border border-white rounded py-2 px-4' >
+                  Logout
+                </button>
+			) : (
+				<>
+				   <div className='space-x-3'>
+				<Link to={"/login"} className=' px-3 py-2 text-black border rounded-xl hover:bg-gray-500 hover:text-white'>Login</Link>
+				<Link to={"/register"} className=' px-3 py-2 text-black border rounded-xl hover:bg-gray-500 hover:text-white'>Register</Link>
+
 			</div>
+				</>
+			)}
+
+			
 
 			<div className={clsx(
 				"hidden w-full",

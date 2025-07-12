@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { ChevronLeft, ChevronRight } from 'react-feather';
 
 import Button from "../components/Button"
+import { Link } from 'react-router-dom';
 
 export default function Slider({ slides }) {
   const [current, setCurrent] = useState(0)
@@ -37,7 +38,7 @@ export default function Slider({ slides }) {
             )}>
             	<h2 className="text-4xl sm:text-6xl font-bold mb-10">{slide.title}</h2>
             	<p className="text-xl mb-10">{slide.desc}</p>
-            	<Button className="text-xl w-1/2" light>Shop now</Button>
+            	<Link to={"/listings"} className="text-xl w-1/2" light>Shop now</Link>
             </div>
           </>)}
         </div>

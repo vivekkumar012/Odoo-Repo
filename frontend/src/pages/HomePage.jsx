@@ -9,7 +9,7 @@ import CategoryList from "../ui/CategoryList.jsx"
 import ProductList from "../ui/ProductList"
 import Newsletter from "../ui/Newsletter"
 import Slider from "../ui/Slider"
-// import api from '../api.js'
+import api from '../api.js'
 import { CartContext, UserContext } from "../App.jsx"
 import Carousel from '../components/Carousel.jsx'
 

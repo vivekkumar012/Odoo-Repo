@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { User, Mail, Lock } from "react-feather"
+import axios from 'axios'
+import toast from 'react-hot-toast';
 
 import Input from "../components/Input"
 import Button from "../components/Button"
@@ -9,30 +11,61 @@ import Alert from "../components/Alert"
 import Loader from '../components/Loader'   
 
 export default function RegisterForm({ onSubmit }) {
-	const [fullname, setFullname] = useState("")
+	const [firstname, setFirstName] = useState("")
+	const [lastname, setLastName] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
-	const [confirmPassword, setConfirmPassword] = useState("")
 	const [error, setError] = useState(null)
 	const [loading, setLoading] = useState(false)
 
-	const handleSubmit = async e => {
-		e.preventDefault()
-		if (password.length < 6) {
-			setError("password must be atleast 6 characters")
-			return
-		}
-		if (password !== confirmPassword) {
-			setError("passwords don't match")
-			return
-		}
-		setLoading(true)
-		const resp = await onSubmit({fullname, email, password, confirmPassword})
-		setLoading(false)
-		if (resp.status == "error") {
-			setError(resp.message)
-		}
-	}
+	const navigate = useNavigate()
+
+// 	const handleSubmit = async e => {
+// 		e.preventDefault()
+// 		if (password.length < 6) {
+// 			setError("password must be atleast 6 characters")
+// 			return
+// 		}
+// 		if (password !== confirmPassword) {
+// 			setError("passwords don't match")
+// 			return
+// 		}
+// 		setLoading(true)
+// 		// const resp = await onSubmit({fullname, email, password, confirmPassword})
+// 		const [firstname, ...rest] = fullname.trim().split(" ")
+// const lastname = rest.join(" ") || " "
+
+// const resp = await onSubmit({ firstname, lastname, email, password, confirmPassword });
+
+// 		setLoading(false)
+// 		if (resp.status == "error") {
+// 			setError(resp.message)
+// 		}
+// 	}
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:3001/api/v1/user/signup", {
+        firstname,
+        lastname,
+        email,
+        password,
+      },{
+        withCredentials: true,
+        headers:{
+          "Content-Type": "application/json"
+        }
+      })
+      console.log("SignUp Successfully: ", response.data);
+      toast.success(response.data.message);
+      navigate("/login");
+    } catch (error) {
+      if(error.response) {
+        setError(error.response.data.errors || "Error in Signup!!!");
+      }
+    }
+  }
 
 	useEffect(() => {
 		return () => {
@@ -46,10 +79,15 @@ export default function RegisterForm({ onSubmit }) {
 			className="flex items-center flex-col space-y-2"
 			>
 			<Input 
-				value={fullname}
+				value={firstname}
 				icon={<User width={20} height={20} />}
-				onChange={e => setFullname(e.target.value)}
-				type="text" placeholder="Full Name" required />
+				onChange={e => setFirstName(e.target.value)}
+				type="text" placeholder="First Name" required />
+			<Input 
+				value={lastname}
+				icon={<User width={20} height={20} />}
+				onChange={e => setLastName(e.target.value)}
+				type="text" placeholder="last Name" required />
 			<Input 						
 				value={email}
 				icon={<Mail width={20} height={20} />}
@@ -60,11 +98,7 @@ export default function RegisterForm({ onSubmit }) {
 				icon={<Lock width={20} height={20} />}
 				onChange={e => setPassword(e.target.value)}
 				type="password" placeholder="Password" required />
-			<Input
-				value={confirmPassword}
-				icon={<Lock width={20} height={20} />}
-				onChange={e => setConfirmPassword(e.target.value)} 
-				type="password" placeholder="Confirm Password" required />
+			
 			
 			{error && <Alert heading="Error!" body={error} danger />}
 

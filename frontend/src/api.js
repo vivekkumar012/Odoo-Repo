@@ -16,7 +16,7 @@ function getUser() {
 }
 
 async function registerUser({fullname, email, password}) {
-  const resp = await fetch(API_URL+"/user/register", {
+  const resp = await fetch(API_URL+"/user/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -27,7 +27,7 @@ async function registerUser({fullname, email, password}) {
 }
 
 async function loginUser({email, password}) {
-  const resp = await fetch(API_URL+"/auth/login", {
+  const resp = await fetch(API_URL+"/user/signin", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

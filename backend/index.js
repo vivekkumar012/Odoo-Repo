@@ -8,7 +8,10 @@ import cors from 'cors'
 const app = express();
 dotenv.config();
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",  // your frontend Vite port
+  credentials: true                 // allow cookies/auth headers
+}));
 
 try {
     await mongoose.connect(process.env.MONGO_URL);

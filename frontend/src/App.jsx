@@ -6,6 +6,7 @@ import HomePage from "../src/pages/HomePage.jsx"
 import LoginPage from "../src/pages/LoginPage"
 import RegisterPage from "../src/pages/RegisterPage"
 import NotFoundPage from "../src/pages/404Page"
+import toast, { Toaster } from 'react-hot-toast';
 // import ProductsPage from "@/pages/ProductsPage"
 // import ProductDetailsPage from "@/pages/ProductDetailsPage"
 // import CartPage from "@/pages/CartPage"
@@ -16,6 +17,7 @@ import api from './api'
 import cartReducer, { initialCartState } from './reducers/cartReducer.js'
 import useReducerWithLocalStorage from './hooks/useReducerWithLocalStorage'
 import UserLayout from './layouts/UserLayout'
+import Listings from './pages/Listings.jsx'
 
 export const UserContext = createContext()
 export const CartContext = createContext()
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="/" element={<UserLayout />}>
             <Route index element={<HomePage />} />
             {/* <Route path="cart" element={<CartPage />} /> */}
+            
 
             <Route path="login" element={user ? <Navigate replace to="/" /> : <LoginPage />} />
             <Route path="register" element={user ? <Navigate replace to="/" /> : <RegisterPage />} />
@@ -65,10 +68,13 @@ export default function App() {
               <Route path=":id" element={<ProductDetailsPage />} />
             </Route> */}
             
-            {/* <Route path="orders">
+            <Route path="orders">
               <Route index element={user ? <OrdersPage /> : <Navigate replace to="/login" />} />
               <Route path=":id" element={user ? <OrderDetailsPage /> : <Navigate replace to="/login" />} />
-            </Route> */}
+            </Route>
+            <Route path='/login' element={<LoginPage />} />
+            <Route path='/register' element={<RegisterPage />} />
+            <Route path='/listings' element={<Listings />} />
           </Route>
             
           <Route path="*" element={<NotFoundPage />} />
@@ -76,6 +82,8 @@ export default function App() {
 
       </UserContext.Provider>
       </CartContext.Provider>
+      <Toaster />
     </BrowserRouter>
+    
   );
 }

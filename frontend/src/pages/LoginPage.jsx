@@ -1,64 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom"
-import { Mail, Lock } from "react-feather"
-import Loader from '../components/Loader'
+import React, { useContext } from 'react'
+import { sliderItems } from '../dummydata.js'
 
-import Input from "../components/Input"
-import Button from "../components/Button"
-import Alert from "../components/Alert"
+import { UserContext, CartContext } from '../App'
+import LoginForm from "../ui/LoginForm"
+import api from '../api.js'
+import { useNavigate } from 'react-router-dom'
 
-export default function LoginForm({ onSubmit }) {
-	const [email, setEmail] = useState("")
-	const [password, setPassword] = useState("")
-	const [error, setError] = useState("")
-	const [loading, setLoading] = useState("")
+export default function LoginPage() {
+	const {cart} = useContext(CartContext)
+	const {setUser} = useContext(UserContext)
+	const navigate = useNavigate()
 
-	const handleSubmit = async e => {
-		e.preventDefault()
-		setLoading(true)
-		const resp = await onSubmit({email, password})
-		setLoading(false)
-		if (resp.status == "error") {
-			setError(resp.message)
+	const handleLogin = async userData => {
+		const resp = await api.loginUser(userData)
+		if (resp.status == "ok") {
+			if (cart.products.length) {
+				await api.addProductsToCart(cart.products.map(p => ({
+					productID: p.id,
+					quantity: p.quantity
+				})))
+			}
+			setUser(api.getUser())
+			if (cart.products.length) {
+				navigate("/cart")
+			} else {
+				navigate("/account")
+			}
 		}
+		return resp
 	}
-	useEffect(() => {
-		return () => {
-			setLoading(false)
-		}
-	}, [])
+	const randomSlide = sliderItems[Math.floor(Math.random() * sliderItems.length)]
 
 	return (
-		<form
-			className="flex items-center flex-col space-y-2"
-			onSubmit={handleSubmit}
+		<main 
+			className="flex justify-center h-screen items-center bg-cover bg-center sm:bg-left"
+			style={{backgroundImage: `url(${randomSlide.image})`}}
 		>
-			<Input 
-				value={email}
-				onChange={e => setEmail(e.target.value)}
-				icon={<Mail width={20} height={20} />}
-				type="email" placeholder="Email" required />
-			<Input 
-				value={password}
-				icon={<Lock width={20} height={20} />}
-				onChange={e => setPassword(e.target.value)}
-				type="password" placeholder="Password" required />
-
-			{error && <Alert heading="Error!" body={error} danger />}
-
-			<Button 
-				className="w-full !mt-6 !text-base !rounded-full" 
-				type="submit"
-				disabled={loading}
-			>
-				{loading ? <Loader /> : "Login"}
-			</Button>
-				
-			<Link to="/register">
-				<Button link>
-					Create an account
-				</Button>
-			</Link>
-		</form>
+			<div className="min-w-sm p-6 rounded-lg bg-white filter drop-shadow-2xl">
+				<h3 className="text-2xl font-bold text-center mb-6">Login to your account</h3>
+				<LoginForm onSubmit={handleLogin} />
+			</div>
+		</main>
 	)
 }

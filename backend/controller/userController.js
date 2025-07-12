@@ -69,13 +69,13 @@ export const signin = async (req, res) => {
                 message: "password not match"
             })
         }
-        const token = await jwt.sign({
+        const token =  jwt.sign({
             id: user._id
         }, process.env.JWT_SECRET);
 
         res.status(200).json({
             message: "User successfully signedin",
-            newUser,
+            user,
             token
         })
     } catch (error) {
@@ -84,3 +84,22 @@ export const signin = async (req, res) => {
         })
     }
 }
+
+// export const logout = async(req, res) => {
+//     try {
+//         if(!req.cookies.jwt) {
+//             return res.status(400).json({
+//                 message: "Login first"
+//             })
+//         }
+//         res.clearCookie("jwt");
+//         res.status(200).json({
+//             message: "user Logout Successfully"
+//         })
+//     } catch (error) {
+//         res.status(400).json({
+//             message: "Error in User Logout",
+//             error: error.message
+//         })
+//     }
+// }
