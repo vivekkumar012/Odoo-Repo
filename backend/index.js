@@ -2,10 +2,13 @@ import express from 'express'
 import userRouter from './routes/userRoute.js';
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
+import categoryRouter from './routes/categoryRoute.js';
+import cors from 'cors'
 
 const app = express();
 dotenv.config();
 app.use(express.json());
+app.use(cors())
 
 try {
     await mongoose.connect(process.env.MONGO_URL);
@@ -16,6 +19,7 @@ try {
 
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/admin', userRouter);
+app.use('/api/v1/product', categoryRouter);
 
 
 const port = 3001;

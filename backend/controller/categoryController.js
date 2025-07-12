@@ -78,3 +78,13 @@ export const deleteItem = async (req, res) => {
         res.status(500).json({ success: false, message: "Deletion failed", error: error.message });
     }
 };
+
+// Get all approved items (for frontend listings)
+export const getAllApprovedItems = async (req, res) => {
+    try {
+        const items = await categoryModel.find({ status: "approved" });
+        res.status(200).json({ success: true, data: items });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error fetching items", error: error.message });
+    }
+};
