@@ -7,7 +7,8 @@ import Button from "../components/Button"
 import Container from "../components/Container"
 import CategoryList from "../ui/CategoryList.jsx"
 import ProductList from "../ui/ProductList"
-import Newsletter from "../ui/NewsLetter.jsx"
+import Newsletter from "@/ui/Newsletter";
+
 import Slider from "../ui/Slider"
 import api from '../api.js'
 import { CartContext, UserContext } from "../App.jsx"
