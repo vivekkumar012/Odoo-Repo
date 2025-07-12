@@ -29,7 +29,7 @@ export default function LoginForm({ onSubmit }) {
 	const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3001/api/v1/user/signin", {
+      const response = await axios.post("https://odoo-repo-2.onrender.com/api/v1/user/signin", {
         email,
         password
       }, {

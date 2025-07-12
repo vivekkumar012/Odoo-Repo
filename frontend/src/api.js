@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3001/api/v1"
+const API_URL = "https://odoo-repo-2.onrender.com"
 
 function setAccessToken(token) {
   localStorage.setItem('token', token)
