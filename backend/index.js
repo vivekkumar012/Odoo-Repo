@@ -15,6 +15,7 @@ try {
 }
 
 app.use('/api/v1/user', userRouter);
+app.use('/api/v1/admin', userRouter);
 
 
 const port = 3001;
